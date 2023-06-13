@@ -5,7 +5,7 @@ pipeline {
     stage('Git') {
       steps {
         echo 'Clone'
-        git 'https://github.com/Gaser98/App-deployment'
+        git 'https://github.com/Gaser98/App-deployment.git'
       }
     }
     
