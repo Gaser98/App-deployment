@@ -5,6 +5,15 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build'
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh '''
+                            docker login -u ${USERNAME} -p ${PASSWORD}
+                            docker build -t gaser98/app-jenk:v${BUILD_NUMBER} .
+                            docker push gaser98/app-jenk:v${BUILD_NUMBER}
+                            echo ${BUILD_NUMBER} > ../build.txt
+                        '''
+                    }
             }
         }
     
