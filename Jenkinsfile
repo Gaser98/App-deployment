@@ -28,7 +28,7 @@ pipeline {
                             mv Deployment/deployment.yml Deployment/deployment.yml.tmp
                             cat Deployment/deployment.yml.tmp | envsubst > Deployment/deployment.yml
                             rm -f Deployment/deployment.yml.tmp
-                            kubectl apply -f Deployment --kubeconfig ${KUBECONFIG} -n ${BRANCH_NAME}
+                            kubectl apply -f Deployment --kubeconfig ${KUBECONFIG} -n release
                         '''
                     }
                 }
