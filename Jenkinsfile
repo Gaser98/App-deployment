@@ -1,38 +1,26 @@
 pipeline {
-    agent any
+  agent any
 
-    stages {
-        stage('Build') {
-            steps {
-                echo 'build'
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh '''
-                            docker login -u ${USERNAME} -p ${PASSWORD}
-                            docker build -t gaser98/app-jenk:v${BUILD_NUMBER} .
-                            docker push gaser98/app-jenk:v${BUILD_NUMBER}
-                            echo ${BUILD_NUMBER} > ../build.txt
-                        '''
-                    }
-                }
-            }
+  stages {
+    stage('Build') {
+      steps {
+        script {
+          docker.build('gaser98/app-jenk:v${BUILD_NUMBER}').push()
         }
-        
-        stage('Deploy') {
-            steps {
-                echo 'deploy'
-                script {
-                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                        sh '''
-                            export BUILD_NUMBER=$(cat ../build.txt)
-                            mv Deployment/deploy.yml Deployment/deploy.yml.tmp
-                            cat Deployment/deploy.yml.tmp | envsubst > Deployment/deploy.yml
-                            rm -f Deployment/deploy.yml.tmp
-                            kubectl apply -f Deployment --kubeconfig ${KUBECONFIG} -n release
-                        '''
-                    }
-                }
-            }
-        }
+      }
     }
+
+    stage('Deploy') {
+      environment {
+        KUBECONFIG = credentials('kubeconfig')
+      }
+      steps {
+        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+          sh '''
+            kubectl --kubeconfig=${KUBECONFIG} apply -f Deployment/deploy.yml -n release
+          '''
+        }
+      }
+    }
+  }
 }
