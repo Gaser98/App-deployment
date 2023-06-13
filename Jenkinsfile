@@ -4,30 +4,31 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Build'
+                echo 'build'
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        docker.withRegistry('https://registry.example.com', 'dockerhub') {
-                            def image = docker.build("gaser98/app-jenk:v${BUILD_NUMBER}")
-                            image.push()
-                        }
-                        sh "echo ${BUILD_NUMBER} > ../build.txt"
+                        sh '''
+                            docker login -u ${USERNAME} -p ${PASSWORD}
+                            docker build -t gaser98/app-jenk:v${BUILD_NUMBER} .
+                            docker push gaser98/app-jenk:v${BUILD_NUMBER}
+                            echo ${BUILD_NUMBER} > ../build.txt
+                        '''
                     }
                 }
             }
         }
-    
+        
         stage('Deploy') {
             steps {
-                echo 'Deploy'
+                echo 'deploy'
                 script {
                     withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                         sh '''
                             export BUILD_NUMBER=$(cat ../build.txt)
-                            mv Deployment/deploy.yml Deployment/deploy.yml.tmp
-                            cat Deployment/deploy.yml.tmp | envsubst > Deployment/deploy.yml
-                            rm -f Deployment/deploy.yml.tmp
-                            kubectl apply -f Deployment --kubeconfig ${KUBECONFIG} -n release
+                            mv Deployment/deploy.yaml Deployment/deploy.yaml.tmp
+                            cat Deployment/deploy.yaml.tmp | envsubst > Deployment/deploy.yaml
+                            rm -f Deployment/deploy.yaml.tmp
+                            kubectl apply -f Deployment --kubeconfig ${KUBECONFIG} -n ${BRANCH_NAME}
                         '''
                     }
                 }
