@@ -2,7 +2,12 @@ pipeline {
   agent any
 
   stages {
-    git branch : 'master'
+    stage('Git') {
+      steps {
+        git branch: 'master', url: 'https://github.com/Gaser98/App-deployment.git'
+      }
+    }
+
     stage('Build') {
       steps {
         script {
