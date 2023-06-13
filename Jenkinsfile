@@ -2,6 +2,7 @@ pipeline {
   agent any
 
   stages {
+    git branch : 'master'
     stage('Build') {
       steps {
         script {
