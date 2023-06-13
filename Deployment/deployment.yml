@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: helloworld
+  name: helloworld
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+      - image: gaser98/app-jenk:v${BUILD_NUMBER}
+        name: helloworld
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources: {}
