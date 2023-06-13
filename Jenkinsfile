@@ -14,6 +14,7 @@ pipeline {
                             echo ${BUILD_NUMBER} > ../build.txt
                         '''
                     }
+                }
             }
         }
     
