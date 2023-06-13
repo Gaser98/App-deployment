@@ -2,16 +2,20 @@ pipeline {
   agent any
 
   stages {
-    stage('Git'){
-            steps{
-            echo'clone'
-            git'https://github.com/Gaser98/App-deployment.git'
-            }
-        }
+    stage('Git') {
+      steps {
+        echo 'Clone'
+        git 'https://github.com/Gaser98/App-deployment.git'
+      }
+    }
+    
     stage('Build') {
       steps {
         script {
-          docker.build('gaser98/app-jenk:v${BUILD_NUMBER}').push()
+          docker.withRegistry('https://gaser98/app-jenk', 'dockerhub') {
+            def image = docker.build("gaser98/app-jenk:v${BUILD_NUMBER}")
+            image.push()
+          }
         }
       }
     }
