@@ -5,6 +5,15 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build'
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        docker.withRegistry('https://registry.example.com', 'dockerhub') {
+                            def image = docker.build("gaser98/app-jenk:v${BUILD_NUMBER}")
+                            image.push()
+                        }
+                        sh "echo ${BUILD_NUMBER} > ../build.txt"
+                    }
+                }
             }
         }
     
