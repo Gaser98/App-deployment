@@ -2,13 +2,6 @@ pipeline {
   agent any
 
   stages {
-    stage('Git') {
-      steps {
-        echo 'Clone'
-        git 'https://github.com/Gaser98/App-deployment.git'
-      }
-    }
-    
     stage('Build') {
       steps {
         script {
