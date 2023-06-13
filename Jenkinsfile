@@ -5,23 +5,9 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build'
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                            def imageName = "gaser98/app-jenk:v${BUILD_NUMBER}"
-                            def dockerfile = "Dockerfile" // Path to your Dockerfile
-
-                            // Build Docker image
-                            docker.build(imageName, "-f ${dockerfile} .")
-
-                            // Push Docker image
-                            docker.image(imageName).push()
-                        }
-                    }
-                }
             }
         }
-
+    
         stage('Deploy') {
             steps {
                 echo 'Deploy'
