@@ -2,6 +2,8 @@
 
 Deployment files for an app using automated Jenkins pipeline.
 ![image](https://github.com/Gaser98/App-deployment/assets/76227165/87c0afee-4b36-489e-a3c1-18bd33b16c1a)
+![image](https://github.com/Gaser98/App-deployment/assets/76227165/2133c0e9-9659-4f00-8dd6-8b285509031b)
+
 
 
 # Setup
