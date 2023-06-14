@@ -15,7 +15,7 @@ spec:
         app: helloworld
     spec:
       containers:
-      - image: gaser98/app-jenk:{{ .Values.image .tag }}
+      - image: gaser98/app-jenk:{{ .Values.image.tag }}
         name: helloworld
         imagePullPolicy: Always
         ports:
