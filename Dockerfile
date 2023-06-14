@@ -1,12 +1,6 @@
-FROM python:3.9-slim
-
+FROM python:3-alpine3.15 
 WORKDIR /app
-
-COPY app.py .
-
-RUN pip install -r requirements.txt
-
+COPY . /app
+RUN pip install -r requirements.txt 
 EXPOSE 5000
-
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0" ]
-
