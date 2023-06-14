@@ -22,14 +22,18 @@ pipeline {
             steps {
                 echo 'deploy'
                 script {
-                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                         sh '''
-                            export BUILD_NUMBER=$(cat ../build.txt)
-                            mv Deployment/deployment.yml Deployment/deployment.yml.tmp
-                            cat Deployment/deployment.yml.tmp | envsubst > Deployment/deployment.yml
-                            rm -f Deployment/deployment.yml.tmp
-                            kubectl apply -f Deployment --kubeconfig ${KUBECONFIG} -n release
-                        '''
+                                PATH=/home/jenkins/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+                                export BUILD_NUMBER=$(cat ../build.txt)
+                                export check=$(helm list --short | grep "my-app-release")
+                                if [ -z $check ]
+                                then
+                                    helm install my-app-release ./my-chart/  
+                                else
+                                    helm upgrade my-app-release ./my-chart/  
+                                fi
+
+                            '''
                     }
                 }
             }
