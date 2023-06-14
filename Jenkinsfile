@@ -28,9 +28,9 @@ pipeline {
                                 export check=$(helm list --short | grep "my-app-release")
                                 if [ -z $check ]
                                 then
-                                    helm install my-app-release ./my-chart/  
+                                    helm install my-app-release ./my-chart/  --set image.tag=v${BUILD_NUMBER}
                                 else
-                                    helm upgrade my-app-release ./my-chart/  
+                                    helm upgrade my-app-release ./my-chart/  --set image.tag=v${BUILD_NUMBER}
                                 fi
 
                             '''
